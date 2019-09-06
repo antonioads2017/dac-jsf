@@ -23,6 +23,7 @@
         <property name="databaseName" value="dac-jsf"/>
         <property name="User" value="postgres"/>
         <property name="Password" value="postgres"/>
+        <property name="URL" value="jdbc:postgresql://host-banco:5432/dac-jsf"/>
         <property name="driverClass" value="org.postgresql.Driver"/>
     </jdbc-connection-pool>
     <jdbc-resource enabled="true"

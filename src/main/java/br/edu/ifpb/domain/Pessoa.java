@@ -11,37 +11,36 @@ public class Pessoa {
 
     private int id;
     private String nome;
-    private CPF cpf;
+    private String cpf;
     private Dependente dependente;
 
     public Pessoa() {
-        this(
-            "",
-            "11122233344"
-        );
     }
 
     public Pessoa(String nome,String cpf) {
-        this(
-            nome,new CPF(cpf)
-        );
-    }
-
-    public Pessoa(String nome,CPF cpf) {
         this.cpf = cpf;
         this.nome = nome;
-    }
-
-    public CPF getCpf() {
-        return cpf;
     }
 
     public String getNome() {
         return nome;
     }
 
-    public void setCpf(CPF cpf) {
+
+    public String getCpf() {
+        return cpf;
+    }
+
+    public void setCpf(String cpf) {
         this.cpf = cpf;
+    }
+
+    public Dependente getDependente() {
+        return dependente;
+    }
+
+    public void setDependente(Dependente dependente) {
+        this.dependente = dependente;
     }
 
     public void setNome(String nome) {
@@ -58,44 +57,27 @@ public class Pessoa {
 
     @Override
     public String toString() {
-        return "{ 'cpf':'" + cpf + "', 'nome': '" + nome + "'}";
+        return "Pessoa{" +
+                "id=" + id +
+                ", nome='" + nome + '\'' +
+                ", cpf='" + cpf + '\'' +
+                ", dependente=" + dependente +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Pessoa pessoa = (Pessoa) o;
+        return id == pessoa.id &&
+                Objects.equals(nome, pessoa.nome) &&
+                Objects.equals(cpf, pessoa.cpf) &&
+                Objects.equals(dependente, pessoa.dependente);
     }
 
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 17 * hash + Objects.hashCode(this.cpf);
-        hash = 17 * hash + Objects.hashCode(this.nome);
-        hash = 17 * hash + this.id;
-        hash = 17 * hash + Objects.hashCode(this.dependente);
-        return hash;
+        return Objects.hash(id, nome, cpf, dependente);
     }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Pessoa other = (Pessoa) obj;
-        if (this.id != other.id) {
-            return false;
-        }
-        if (!Objects.equals(this.nome,other.nome)) {
-            return false;
-        }
-        if (!Objects.equals(this.cpf,other.cpf)) {
-            return false;
-        }
-        if (!Objects.equals(this.dependente,other.dependente)) {
-            return false;
-        }
-        return true;
-    }
-
 }

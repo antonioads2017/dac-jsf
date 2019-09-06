@@ -44,7 +44,7 @@ public class PessoasEmJDBC implements Pessoas {
                     "INSERT INTO pessoa (nome,cpf) VALUES (?,?)"
             );
             statement.setString(1,pessoa.getNome());
-            statement.setString(2,pessoa.getCpf().formatado());
+            statement.setString(2,pessoa.getCpf());
             statement.executeUpdate();
         }catch (SQLException ex) {
             Logger.getLogger(PessoasEmJDBC.class.getName()).log(Level.SEVERE,null,ex);
@@ -90,7 +90,7 @@ public class PessoasEmJDBC implements Pessoas {
                         "UPDATE pessoa SET nome=?, cpf=? WHERE id=?"
                 );
                 statement.setString(1,pessoa.getNome());
-                statement.setString(2,pessoa.getCpf().formatado());
+                statement.setString(2,pessoa.getCpf());
                 statement.setInt(3,pessoa.getId());
                 statement.execute();
             }catch (SQLException ex) {
@@ -183,7 +183,7 @@ public class PessoasEmJDBC implements Pessoas {
         Pessoa pessoa = new Pessoa();
         pessoa.setNome(nome);
         pessoa.setId(id);
-        pessoa.setCpf(new CPF(cpf));
+        pessoa.setCpf(cpf);
         return pessoa;
     }
     private Dependente criarDep (ResultSet result) throws SQLException {
