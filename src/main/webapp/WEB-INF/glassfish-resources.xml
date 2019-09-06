@@ -18,8 +18,8 @@
                           statement-timeout-in-seconds="-1" steady-pool-size="8"
                           validate-atmost-once-period-in-seconds="0" wrap-jdbc-objects="false"
                           name="post-gre-sql_exemplo-dac_postgresPool" >
-        <property name="serverName" value="dac-jsf"/>
-        <property name="portNumber" value="5433"/>
+        <property name="serverName" value="host-banco"/>
+        <property name="portNumber" value="5432"/>
         <property name="databaseName" value="dac-jsf"/>
         <property name="User" value="postgres"/>
         <property name="Password" value="postgres"/>

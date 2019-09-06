@@ -30,7 +30,7 @@
     </dependencies>
 
     <build>
-        <finalName>dac-jsf</finalName>
+        <finalName>jsfApp</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

@@ -1,3 +1,2 @@
-FROM payara/server-full:5.183 
-EXPOSE 4848 8009 9009 8080 8181 8686 6001
-COPY target/dac-jsf.war $DEPLOY_DIR
+FROM payara/server-web
+COPY target/jsfApp.war $DEPLOY_DIR

@@ -7,6 +7,7 @@ import br.edu.ifpb.domain.Pessoas;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
+import javax.ejb.Stateless;
 import javax.sql.DataSource;
 import java.sql.*;
 
@@ -17,6 +18,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+@Stateless
 public class PessoasEmJDBC implements Pessoas {
 
     @Resource(name="java:app/jdbc/pessoas")
