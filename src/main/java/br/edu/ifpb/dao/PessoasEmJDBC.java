@@ -8,11 +8,8 @@ import br.edu.ifpb.domain.Pessoas;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.sql.DataSource;
-import java.sql.Connection;
+import java.sql.*;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -100,6 +97,37 @@ public class PessoasEmJDBC implements Pessoas {
     }
 
     @Override
+    public Pessoa localizarPorCPF(String cpf){
+        try{
+            PreparedStatement statement = connection.prepareStatement(
+                "SELECT * FROM pessoa WHERE cpf=?"
+            );
+            statement.setString(1,cpf);
+            ResultSet resultSet = statement.executeQuery();
+            Pessoa pessoa = criarPessoa(resultSet);
+            return pessoa;
+        }catch (SQLException ex) {
+            Logger.getLogger(PessoasEmJDBC.class.getName()).log(Level.SEVERE,null,ex);
+            return null;
+        }
+    }
+
+    @Override
+    public  void addDep(Dependente dependente){
+        try{
+            PreparedStatement statement = connection.prepareStatement(
+                    "INSERT INTO dependente (uuid,nome,dataN) VALUES (?,?,?)"
+            );
+            statement.setString(1,dependente.getUuid());
+            statement.setString(2,dependente.getNome());
+            statement.setDate(3, Date.valueOf(dependente.getDataDeNascimento()));
+            statement.executeUpdate();
+        }catch (SQLException ex) {
+            Logger.getLogger(PessoasEmJDBC.class.getName()).log(Level.SEVERE,null,ex);
+        }
+    }
+
+    @Override
     public List<Dependente> todosOsDepentendes() {
         try{
             List<Dependente> dependentes = new ArrayList<>();
@@ -132,6 +160,20 @@ public class PessoasEmJDBC implements Pessoas {
         }
     }
 
+    @Override
+    public void setDepEmPessoa(int id, String uuid){
+        try{
+            PreparedStatement statement = connection.prepareStatement(
+                    "UPDATE pessoa SET dependente_uuid=? WHERE id=?"
+            );
+            statement.setString(1,uuid);
+            statement.setInt(2,id);
+            statement.execute();
+        }catch (SQLException ex) {
+            Logger.getLogger(PessoasEmJDBC.class.getName()).log(Level.SEVERE,null,ex);
+        }
+    }
+
     private Pessoa criarPessoa(ResultSet result) throws SQLException {
         String nome = result.getString("nome");
         String cpf = result.getString("cpf");
@@ -144,7 +186,7 @@ public class PessoasEmJDBC implements Pessoas {
     }
     private Dependente criarDep (ResultSet result) throws SQLException {
         String nome = result.getString("nome");
-        LocalDate data = result.getDate("data").toLocalDate();
+        LocalDate data = result.getDate("dataN").toLocalDate();
         String id = result.getString("uuid");
         Dependente dependente = new Dependente();
         dependente.setNome(nome);

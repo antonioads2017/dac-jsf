@@ -17,8 +17,14 @@ public interface Pessoas extends Serializable {
     public void excluir(Pessoa pessoa);
 
     public void atualizar(Pessoa pessoa);
+
+    Pessoa localizarPorCPF(String cpf);
+
+    void addDep(Dependente dependente);
     
     public List<Dependente> todosOsDepentendes();
 
     public Dependente localizarDependenteComId(String uuid);
+
+    void setDepEmPessoa(int id, String uuid);
 }
