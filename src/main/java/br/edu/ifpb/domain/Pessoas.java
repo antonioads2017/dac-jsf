@@ -8,6 +8,7 @@ import java.util.List;
  * @mail ricardo.job@ifpb.edu.br
  * @since 25/04/2019, 09:57:57
  */
+
 public interface Pessoas extends Serializable {
  
     public void nova(Pessoa pessoa);

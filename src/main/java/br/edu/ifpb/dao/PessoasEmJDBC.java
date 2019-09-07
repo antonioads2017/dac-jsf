@@ -1,6 +1,5 @@
 package br.edu.ifpb.dao;
 
-import br.edu.ifpb.domain.CPF;
 import br.edu.ifpb.domain.Dependente;
 import br.edu.ifpb.domain.Pessoa;
 import br.edu.ifpb.domain.Pessoas;
@@ -21,7 +20,7 @@ import java.util.logging.Logger;
 @Stateless
 public class PessoasEmJDBC implements Pessoas {
 
-    @Resource(name="java:app/jdbc/pessoas")
+    @Resource(name="java:app/jdbc/pgadmin")
     private DataSource dataSource;
     private Connection connection;
 
@@ -54,19 +53,20 @@ public class PessoasEmJDBC implements Pessoas {
 
     @Override
     public List<Pessoa> todas() {
+        List<Pessoa> pessoas = new ArrayList<>();
         try{
-            List<Pessoa> pessoas = new ArrayList<>();
-           ResultSet resultSet = connection.prepareStatement(
-                    "SELECT * FROM pessoa"
-            ).executeQuery();
+           PreparedStatement statement = connection.prepareStatement(
+                   "SELECT * FROM pessoa ORDER BY nome"
+           );
+           ResultSet resultSet = statement.executeQuery();
            while (resultSet.next()){
                pessoas.add(criarPessoa(resultSet));
            }
-           return pessoas;
+
         }catch (SQLException ex) {
             Logger.getLogger(PessoasEmJDBC.class.getName()).log(Level.SEVERE,null,ex);
-            return Collections.emptyList();
         }
+        return pessoas;
     }
 
     @Override

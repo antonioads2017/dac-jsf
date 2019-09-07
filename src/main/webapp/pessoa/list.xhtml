@@ -3,34 +3,35 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
-      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
-    <ui:composition template="templateAula.xhtml">
-        <ui:define name="centro">
-            
-            <h:form>
-                <h:commandLink value="novo" action="edit.xhtml?faces-redirect=true" />
-                <h:dataTable var="pessoa" value="#{controladorDePessoas.todasAsPessoas}"
-                             class="striped highlight">
-                    <h:column>
-                        <f:facet name="header">CPF</f:facet>
-                            #{pessoa.cpf.formatado()}
-                            <!--<h:outputText value="{pessoa.cpf}" converter="convert.cpf"/>-->
-                    </h:column>
-                    <h:column>
-                        <f:facet name="header">Nome</f:facet>
-                            #{pessoa.nome}
-                    </h:column>
-                    <h:column>
-                        <h:commandButton value="x" action="#{controladorDePessoas.excluir(pessoa)}" 
-                                         class="btn-floating"/>
-                    </h:column>
-                    <h:column>
-                        <h:commandButton value="editar" action="#{controladorDePessoas.editar(pessoa)}" 
-                                         class="btn"/>
-                    </h:column>
-                </h:dataTable>
-            </h:form>
-        </ui:define>
-    </ui:composition>
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+<ui:composition template="templateAula.xhtml">
+    <ui:define name="centro">
+    <h:form>
+        <h4>Listagem de Pessoas</h4>
+        <h:dataTable value="#{controladorDePesssoas.listarPessoas()}" var="pessoa">
+            <h:column>
+                <f:facet name="header">ID</f:facet>#{pessoa.id}
+            </h:column>
+            <h:column>
+            <f:facet name="header">Nome</f:facet>#{pessoa.nome}
+            </h:column>
+            <h:column>
+                <f:facet name="header">CPF</f:facet>#{pessoa.cpf}
+            </h:column>
+            <h:column>
+                <f:facet name="header">Dependente</f:facet>#{pessoa.dependente.nome}
+            </h:column>
+            <h:column>
+                <h:commandButton value="Excluir"  styleClass="btn red" action="#{controladorDePesssoas.delPessoa(pessoa)}" ajax="true"/>
+            </h:column>
+            <h:column>
+                <h:commandButton value="Editar"  styleClass="btn blue" action="#{controladorDePesssoas.editarPessoa(pessoa)}" ajax="true"/>
+            </h:column>
+
+        </h:dataTable>
+    </h:form>
+    </ui:define>
+</ui:composition>
 </html>
 
