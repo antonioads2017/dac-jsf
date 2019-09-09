@@ -6,43 +6,64 @@ import br.edu.ifpb.domain.Pessoa;
 import br.edu.ifpb.domain.Pessoas;
 
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.SessionScoped;
+import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
 import java.util.List;
 
-@SessionScoped
+@ViewScoped
 @Named
 public class ControladorDePesssoas implements Serializable {
 
-    private Pessoa pessoa;
+    private Pessoa pessoa = new Pessoa();
+    private List<Pessoa> pessoas;
+    private String cpf;
+    private List<Pessoa> pessoasComFiltro;
+
 
     @Inject
     private Pessoas pessoaDao;
 
     @PostConstruct
     public void init(){
-        pessoa = new Pessoa();
+        this.pessoas = pessoaDao.todas();
+        this.pessoasComFiltro=pessoas;
     }
 
-    public List<Pessoa> listarPessoas(){
-        return pessoaDao.todas();
+    public String salvar(){
+        this.pessoaDao.nova(pessoa);
+        System.out.println(pessoa);
+        this.pessoa = new Pessoa();
+        this.pessoas=pessoaDao.todas();
+        return null;
     }
 
     public String delPessoa(Pessoa pessoa1){
         pessoaDao.excluir(pessoa1);
-        return "";
+        pessoas = pessoaDao.todas();
+        return null;
     }
 
     public String editarPessoa(Pessoa editara){
-        setPessoa(editara);
-        return "edit.xhtml?faces-redirect=true";
+        this.pessoa = editara;
+        pessoas=pessoaDao.todas();
+        return null;
     }
 
-    public List<Dependente> listarDeps(){
-        return pessoaDao.todosOsDepentendes();
+    public String atualizar(){
+        this.pessoaDao.atualizar(pessoa);
+        System.out.println(pessoa);
+        this.pessoa = new Pessoa();
+        pessoas = pessoaDao.todas();
+        return null;
     }
+
+    public String buscar(){
+        this.pessoasComFiltro=this.pessoaDao.listarPorFiltro(cpf);
+        return null;
+    }
+
 
     public Pessoa getPessoa() {
         return pessoa;
@@ -52,11 +73,28 @@ public class ControladorDePesssoas implements Serializable {
         this.pessoa = pessoa;
     }
 
-    public Pessoas getPessoaDao() {
-        return pessoaDao;
+
+    public List<Pessoa> getPessoas() {
+        return pessoas;
     }
 
-    public void setPessoaDao(Pessoas pessoaDao) {
-        this.pessoaDao = pessoaDao;
+    public void setPessoas(List<Pessoa> pessoas) {
+        this.pessoas = pessoas;
+    }
+
+    public String getCpf() {
+        return cpf;
+    }
+
+    public void setCpf(String cpf) {
+        this.cpf = cpf;
+    }
+
+    public List<Pessoa> getPessoasComFiltro() {
+        return pessoasComFiltro;
+    }
+
+    public void setPessoasComFiltro(List<Pessoa> pessoasComFiltro) {
+        this.pessoasComFiltro = pessoasComFiltro;
     }
 }

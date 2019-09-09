@@ -21,11 +21,7 @@ public interface Pessoas extends Serializable {
 
     Pessoa localizarPorCPF(String cpf);
 
-    void addDep(Dependente dependente);
-    
-    public List<Dependente> todosOsDepentendes();
-
-    public Dependente localizarDependenteComId(String uuid);
+    List<Pessoa> listarPorFiltro(String cpf);
 
     void setDepEmPessoa(int id, String uuid);
 }

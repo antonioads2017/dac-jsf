@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:jsf="http://xmlns.jcp.org/jsf">
+<ui:composition template="../templateAula.xhtml">
+    <ui:define name="centro">
+        <div class="container">
+            <h4>Formulario de Pessoas</h4>
+            <div class="row center">
+                <h:form>
+                    <div class="row center">
+                        <div class="col s6">
+                            <div class="input-field">
+                                <input class="validate" type="text" id="nome" jsf:value="#{controladorDeDependentes.dependente.nome}" />
+                                <label for="nome">Nome</label>
+                            </div>
+                        </div>
+                        <div class="col s6">
+                            <div class="input-field">
+                                <h:inputText id="data" value="#{controladorDeDependentes.dependente.dataDeNascimento}"
+                                             converterMessage="Tipo de data inválida" >
+                                    <f:convertDateTime pattern="dd/MM/yyyy" type="localDate"></f:convertDateTime>
+                                    <f:validator validatorId="dateValidator"></f:validator>
+                                </h:inputText>
+                                <label for="data">Nascimento</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row center">
+                        <div class="col s12 center">
+                            <button class="btn-large blue" jsf:action="#{controladorDeDependentes.salvar}" >Salvar</button>
+                            <button  class="btn-large green" jsf:action="#{controladorDeDependentes.atualizar}">Atualizar</button>
+                        </div>
+                    </div>
+                    <h:message></h:message>
+                </h:form>
+            </div>
+        </div>
+        <h4>Listagem de Pessoas</h4>
+        <div class="row center">
+            <h:form>
+
+                <h:dataTable value="#{controladorDeDependentes.dependentes}" var="dep">
+                    <h:column>
+                        <f:facet name="header">UUID</f:facet>
+                        <h:outputText value="#{dep.uuid}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">Nome</f:facet>
+                        <h:outputText value="#{dep.nome}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">Data de Nascimento</f:facet>
+                        <h:outputText value="#{dep.dataDeNascimento}">
+                            <f:convertDateTime pattern="dd/MM/yyyy" type="localDate"></f:convertDateTime>
+                        </h:outputText>
+                    </h:column>
+                    <h:column>
+                        <h:commandLink value="Excluir"  styleClass="btn red" action="#{controladorDeDependentes.delDep(dep)}"/>
+                    </h:column>
+                    <h:column>
+                        <h:commandLink value="Editar"  styleClass="btn blue" action="#{controladorDeDependentes.editarDep(dep)}"/>
+                    </h:column>
+
+                </h:dataTable>
+            </h:form>
+        </div>
+    </ui:define>
+</ui:composition>
+</html>

@@ -40,11 +40,16 @@ public class PessoasEmJDBC implements Pessoas {
     public void nova(Pessoa pessoa) {
         try{
             PreparedStatement statement = connection.prepareStatement(
-                    "INSERT INTO pessoa (nome,cpf) VALUES (?,?)"
+                    "INSERT INTO pessoa (nome,cpf,dependente_uuid) VALUES (?,?,?)"
             );
             statement.setString(1,pessoa.getNome());
             statement.setString(2,pessoa.getCpf());
-            statement.executeUpdate();
+            if(pessoa.getDependente()!=null){
+                statement.setString(3,pessoa.getDependente().getUuid());
+            }else{
+                statement.setString(3,null);
+            }
+            statement.execute();
         }catch (SQLException ex) {
             Logger.getLogger(PessoasEmJDBC.class.getName()).log(Level.SEVERE,null,ex);
         }
@@ -87,12 +92,17 @@ public class PessoasEmJDBC implements Pessoas {
     public void atualizar(Pessoa pessoa) {
             try{
                 PreparedStatement statement = connection.prepareStatement(
-                        "UPDATE pessoa SET nome=?, cpf=? WHERE id=?"
+                        "UPDATE pessoa SET nome=?, dependente_uuid=?, cpf=? WHERE id=?"
                 );
                 statement.setString(1,pessoa.getNome());
-                statement.setString(2,pessoa.getCpf());
-                statement.setInt(3,pessoa.getId());
-                statement.execute();
+                if(pessoa.getDependente()!=null){
+                    statement.setString(2,pessoa.getDependente().getUuid());
+                }else{
+                    statement.setString(2,null);
+                }
+                statement.setString(3,pessoa.getCpf());
+                statement.setInt(4,pessoa.getId());
+                statement.executeUpdate();
             }catch (SQLException ex) {
                 Logger.getLogger(PessoasEmJDBC.class.getName()).log(Level.SEVERE,null,ex);
             }
@@ -115,52 +125,23 @@ public class PessoasEmJDBC implements Pessoas {
     }
 
     @Override
-    public  void addDep(Dependente dependente){
+    public List<Pessoa> listarPorFiltro(String cpf) {
+        List<Pessoa> pessoas = new ArrayList<>();
+        String sql = "SELECT * FROM pessoa where cpf LIKE ? ";
         try{
-            PreparedStatement statement = connection.prepareStatement(
-                    "INSERT INTO dependente (uuid,nome,dataN) VALUES (?,?,?)"
-            );
-            statement.setString(1,dependente.getUuid());
-            statement.setString(2,dependente.getNome());
-            statement.setDate(3, Date.valueOf(dependente.getDataDeNascimento()));
-            statement.executeUpdate();
-        }catch (SQLException ex) {
-            Logger.getLogger(PessoasEmJDBC.class.getName()).log(Level.SEVERE,null,ex);
-        }
-    }
-
-    @Override
-    public List<Dependente> todosOsDepentendes() {
-        try{
-            List<Dependente> dependentes = new ArrayList<>();
-            ResultSet resultSet = connection.prepareStatement(
-                    "SELECT * FROM dependente"
-            ).executeQuery();
-            while (resultSet.next()){
-                dependentes.add(criarDep(resultSet));
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1,"%"+cpf+"%");
+            ResultSet resultSet = statement.executeQuery();
+            while(resultSet.next()){
+                pessoas.add(criarPessoa(resultSet));
             }
-            return dependentes;
-        }catch (SQLException ex) {
+            return pessoas;
+        }catch (SQLException ex){
             Logger.getLogger(PessoasEmJDBC.class.getName()).log(Level.SEVERE,null,ex);
-            return Collections.emptyList();
         }
+        return null;
     }
 
-    @Override
-    public Dependente localizarDependenteComId(String uuid) {
-        try{
-           PreparedStatement statement = connection.prepareStatement(
-                    "SELECT * FROM dependente WHERE uuid=?"
-            );
-           statement.setString(1,uuid);
-           ResultSet resultSet = statement.executeQuery();
-           Dependente dependente = criarDep(resultSet);
-           return dependente;
-        }catch (SQLException ex) {
-            Logger.getLogger(PessoasEmJDBC.class.getName()).log(Level.SEVERE,null,ex);
-            return null;
-        }
-    }
 
     @Override
     public void setDepEmPessoa(int id, String uuid){
@@ -184,16 +165,24 @@ public class PessoasEmJDBC implements Pessoas {
         pessoa.setNome(nome);
         pessoa.setId(id);
         pessoa.setCpf(cpf);
+        pessoa.setDependente(buscarDep(result.getString("dependente_uuid")));
         return pessoa;
     }
-    private Dependente criarDep (ResultSet result) throws SQLException {
-        String nome = result.getString("nome");
-        LocalDate data = result.getDate("dataN").toLocalDate();
-        String id = result.getString("uuid");
-        Dependente dependente = new Dependente();
-        dependente.setNome(nome);
-        dependente.setUuid(id);
-        dependente.setDataDeNascimento(data);
-        return dependente;
+
+    private Dependente buscarDep(String uuid) throws SQLException{
+        String sql = "SELECT * FROM dependente WHERE uuid = ?";
+        PreparedStatement ps = connection.prepareStatement(sql);
+        ps.setString(1, uuid);
+        ResultSet resultSet = ps.executeQuery();
+        if(resultSet.next()){
+            return new Dependente(
+                    resultSet.getString("uuid"),
+                    resultSet.getString("nome"),
+                    resultSet.getDate("dataN").toLocalDate()
+            );
+        }
+        return null;
+
     }
+
 }

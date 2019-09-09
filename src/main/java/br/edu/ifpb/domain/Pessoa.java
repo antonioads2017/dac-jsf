@@ -17,9 +17,10 @@ public class Pessoa {
     public Pessoa() {
     }
 
-    public Pessoa(String nome,String cpf) {
-        this.cpf = cpf;
+    public Pessoa(String nome, String cpf, Dependente dependente){
         this.nome = nome;
+        this.cpf = cpf;
+        this.dependente = dependente;
     }
 
     public String getNome() {

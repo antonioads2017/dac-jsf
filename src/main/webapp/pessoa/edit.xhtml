@@ -4,20 +4,79 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-      xmlns:p="http://primefaces.org/ui">
-<ui:composition template="templateAula.xhtml">
-<ui:define name="centro">
-    <h4>Formulario de Pessoas</h4>
-        <h:form id="formulario">
-            <h:inputText value="#{controladorDePessoas.pessoa.id}" readonly="true"/>
-            <h:inputText  value="#{controladorDePessoas.pessoa.nome}"/>
-            <h:inputText value="#{controladorDePessoas.pessoa.cpf}"/>
-            <h:selectOneMenu value="#{controladorDePesssoas.pessoa.dependente}">
-                <f:selectItems value="#{controladorDePesssoas.listarDeps()}" var="dep" itemLabel="#{dep.nome}"/>
-            </h:selectOneMenu>
-            <h:commandButton value="Salvar" action="#{controladorDePessoas.salvar()}" rendered="#{controladorDePesssoas.pessoa!=null}"/>
-            <h:commandButton value="Editar" action="#{controladorDePessoas.atualizar()}" rendered="#{controladorDePesssoas.pessoa==null}"/>
-        </h:form>
-</ui:define>
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:jsf="http://xmlns.jcp.org/jsf">
+<ui:composition template="../templateAula.xhtml">
+    <ui:define name="centro">
+
+        <div class="container">
+            <h4>Formulario de Pessoas</h4>
+            <div class="row center">
+                <h:form>
+                    <div class="row center">
+                        <div class="col s6">
+                            <div class="input-field">
+                                <input class="validate" type="text" id="nome" jsf:value="#{controladorDePesssoas.pessoa.nome}" />
+                                <label for="nome">Nome</label>
+                            </div>
+                        </div>
+                        <div class="col s6">
+                            <div class="input-field">
+                                <input class="validate" data-mask="000.000.000-00" type="text" id="cpf" jsf:value="#{controladorDePesssoas.pessoa.cpf}" />
+                                <label for="cpf">CPF</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row center">
+                        <div class="col s12 center">
+                            <h:selectOneMenu value="#{controladorDePesssoas.pessoa.dependente}" converter="dependente.convert">
+                                <f:selectItems value="#{controladorDeDependentes.dependentes}"
+                                               var="dependente" itemLabel="#{dependente.nome}" />
+                            </h:selectOneMenu>
+                        </div>
+                    </div>
+                    <div class="row center">
+                        <div class="col s12 center">
+                            <button class="btn-large blue" jsf:action="#{controladorDePesssoas.salvar()}" >Salvar</button>
+                            <button  class="btn-large green" jsf:action="#{controladorDePesssoas.atualizar()}">Atualizar</button>
+                        </div>
+                    </div>
+                    <h:message></h:message>
+                </h:form>
+            </div>
+        </div>
+        <h4>Listagem de Pessoas</h4>
+        <div class="row center">
+            <h:form>
+
+                <h:dataTable value="#{controladorDePesssoas.pessoas}" var="pessoa">
+                    <h:column>
+                        <f:facet name="header">ID</f:facet>
+                        <h:outputText value="#{pessoa.id}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">Nome</f:facet>
+                        <h:outputText value="#{pessoa.nome}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">CPF</f:facet>
+                        <h:outputText value="#{pessoa.cpf}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">Dependente</f:facet>
+                        <h:outputText value="#{pessoa.dependente.nome}"/>
+                    </h:column>
+                    <h:column>
+                        <h:commandLink value="Excluir"  styleClass="btn red" action="#{controladorDePesssoas.delPessoa(pessoa)}"/>
+                    </h:column>
+                    <h:column>
+                        <h:commandLink value="Editar"  styleClass="btn blue" action="#{controladorDePesssoas.editarPessoa(pessoa)}"/>
+                    </h:column>
+
+                </h:dataTable>
+            </h:form>
+        </div>
+    </ui:define>
 </ui:composition>
 </html>
+
